@@ -1,5 +1,6 @@
 package com.rohit.tippy
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.service.autofill.CustomDescription
 import android.text.Editable
@@ -10,8 +11,10 @@ import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 
 
 private const val TAG = "MainActivity"
@@ -79,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun updateTipDescription(tipPercent: Int) {
 
         val tipDescription = when(tipPercent){
@@ -89,6 +93,13 @@ class MainActivity : AppCompatActivity() {
             else -> "Amazing"
         }
         tvTipDescription.text = tipDescription
+        //update the color based on the tipPercent (using interpolation)
+        val color = ArgbEvaluator().evaluate(
+            tipPercent.toFloat() / seekBarTip.max,
+            ContextCompat.getColor(this,R.color.color_worst_tip),
+            ContextCompat.getColor(this,R.color.color_best_tip)
+        ) as Int
+        tvTipDescription.setTextColor(color)
     }
 
     private fun computeTipAndTotal() {
